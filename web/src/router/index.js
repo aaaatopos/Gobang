@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import PkIndexView from '@/views/pk/PkIndexView'
 import RecordIndexView from '@/views/record/RecordIndexView'
+import RecordContentView from '@/views/record/RecordContentView'
 import RanklistIndexView from '@/views/ranklist/RanklistIndexView'
 import UserBotIndexView from '@/views/user/bot/UserBotIndexView'
 import UserAccountLoginView from '@/views/user/account/UserAccountLoginView'
@@ -21,6 +22,14 @@ const routes = [
     path: "/pk/",
     name: "pk_index",
     component: PkIndexView,  // 地址栏输入 localhost:8080/pk/ 即可显示 PkIndexView 的内容
+    meta: {
+      requestAuth: true,
+    }
+  },
+  {
+    path: "/record/:recordId/",  // 路由中加参数
+    name: "record_content",
+    component: RecordContentView,
     meta: {
       requestAuth: true,
     }

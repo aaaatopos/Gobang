@@ -11,14 +11,14 @@ export class Player extends AcGameObject {
         this.gamemap = gamemap;
 
         this.pieces = []; // 用来保存组成该玩家棋情的所有棋子。
+        this.store = gamemap.store;
 
         this.next_piece = "";
 
         this.next_x = -1;
         this.next_y = -1;
-        this.status = "idle"; // idle表示等待玩家操作，play表示正在下，die表示死亡。
+        this.status = "idle"; // wait表示等待对方监听，idle表示等待玩家操作，play表示正在下，die表示死亡。
 
-        this.step = 0; // 表示回合数。
     }
 
     start() {
@@ -34,6 +34,10 @@ export class Player extends AcGameObject {
         const x = this.next_x;
         const y = this.next_y;
         this.next_piece = new Piece(x, y);
+        this.store.commit("updateNextStep", {
+            x: this.next_piece.x.toString(),
+            y: this.next_piece.y.toString(),
+        })
         this.next_x = -1;
         this.next_y = -1;
         this.status = "move";
@@ -63,6 +67,21 @@ export class Player extends AcGameObject {
             canvasGradient.addColorStop(1, this.colorOut);
             ctx.fillStyle = canvasGradient;
             ctx.fill();
+            ctx.closePath();
+        }
+        let x = parseFloat(this.store.state.pk.nextStepX), y = parseFloat(this.store.state.pk.nextStepY);
+        if(x >= 0 && y >= 0) {
+            let dx = [0, 1, 0, -1], dy = [-1, 0, 1, 0];
+            
+            for(let i = 0; i < 4; i ++) {
+                ctx.beginPath();
+                ctx.lineWidth = L / 20;//设置线条宽度10
+                ctx.strokeStyle = 'red';//设置线条颜色为绿色
+                ctx.moveTo((x - dx[i] * 1 / 15) * L, (y - dy[i] * 1 / 15) * L);
+                ctx.lineTo((x - dx[i] * 1 / 5) * L, (y - dy[i] * 1 / 5) * L);
+                ctx.stroke();
+                ctx.closePath();
+            }
         }
     }
 }
